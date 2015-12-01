@@ -18,13 +18,13 @@ describe Oystercard do
     end
   end
 
-  describe '#deduct' do
-    #it { is_expected.to respond_to(:deduct).with(1).argument }
-
-    it 'can deduct funds' do
-      expect { subject.deduct(1) }.to change{ subject.balance }.by -1
-    end
-  end
+  # describe '#deduct' do
+  #   #it { is_expected.to respond_to(:deduct).with(1).argument }
+  #
+  #   it 'can deduct funds' do
+  #     expect { subject.deduct(1) }.to change{ subject.balance }.by -1
+  #   end
+  # end
 
   describe '#tap_in' do
     it 'begins a trip' do
@@ -45,6 +45,14 @@ describe Oystercard do
       subject.tap_out
       expect(subject).to_not be_in_transit
     end
+
+    # it 'deducts fare from the card' do
+    #   subject.top_up(20)
+    #   subject.tap_in
+    #   subject.tap_out
+    #   expect{ subject.deduct(1)}.to change{subject.balance}.by -1
+    # end
+
   end
 
   describe '#in_transit?' do
@@ -52,6 +60,4 @@ describe Oystercard do
       expect(subject).not_to be_in_transit
     end
   end
-
-
 end
