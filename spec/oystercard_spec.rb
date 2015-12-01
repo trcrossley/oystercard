@@ -26,4 +26,27 @@ describe Oystercard do
     end
   end
 
+  describe '#tap_in' do
+    it 'begins a trip' do
+      subject.top_up(20)
+      subject.tap_in
+      expect(subject).to be_in_transit
+    end
+  end
+
+  describe '#tap_out' do
+    it 'ends a trip' do
+      subject.top_up(20)
+      subject.tap_out
+      expect(subject).to_not be_in_transit
+    end
+  end
+
+  describe '#in_transit?' do
+    it 'is not in transit' do
+      expect(subject).not_to be_in_transit
+    end
+  end
+
+
 end

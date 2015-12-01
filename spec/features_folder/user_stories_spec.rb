@@ -14,6 +14,10 @@
 # As a customer
 # I need my fare deducted from my card
 
+# In order to get through the barriers.
+# As a customer
+# I need to touch in and out.
+
 require 'oystercard'
 
 describe 'User Stories' do
