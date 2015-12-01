@@ -32,6 +32,11 @@ describe Oystercard do
       subject.tap_in
       expect(subject).to be_in_transit
     end
+
+    it 'prevents tapping in' do
+      subject.top_up(0) #REFACTOR
+      expect{subject.tap_in}.to raise_error "insufficient funds"
+    end
   end
 
   describe '#tap_out' do

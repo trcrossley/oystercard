@@ -1,6 +1,7 @@
 class Oystercard
 
   CARD_LIMIT = 90
+  MIN_LIMIT = 1
 
   attr_reader :balance, :in_use
 
@@ -19,6 +20,7 @@ class Oystercard
   end
 
   def tap_in
+    fail "insufficient funds" if min_limit
     @in_use = true
 
   end
@@ -35,6 +37,10 @@ private
 
   def max_limit(amount)
     @balance + amount > CARD_LIMIT
+  end
+
+  def min_limit
+    @balance < MIN_LIMIT
   end
 
 end
