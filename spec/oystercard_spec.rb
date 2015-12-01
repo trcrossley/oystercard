@@ -1,6 +1,9 @@
 require 'oystercard'
 
 describe Oystercard do
+
+let(:station){double :station}
+
   it 'has a balance of zero' do
     expect(subject.balance).to eq(0)
   end
@@ -29,14 +32,20 @@ describe Oystercard do
   describe '#tap_in' do
     it 'begins a trip' do
       subject.top_up(20)
-      subject.tap_in
+      subject.tap_in(station)
       expect(subject).to be_in_transit
     end
 
     it 'prevents tapping in' do
-      subject.top_up(0) #REFACTOR
-      expect{subject.tap_in}.to raise_error "insufficient funds"
+      expect{subject.tap_in(station)}.to raise_error "insufficient funds"
     end
+
+    it 'stores the entry station' do
+      subject.top_up(20)
+      subject.tap_in(station)
+      expect(subject.entry_station).to eq station
+    end
+
   end
 
   describe '#tap_out' do
@@ -48,7 +57,7 @@ describe Oystercard do
 
     it 'deducts fare from the card' do
       subject.top_up(20)
-      subject.tap_in
+      subject.tap_in(station)
       expect{ subject.tap_out}.to change{subject.balance}.by(-Oystercard::MIN_FARE)
     end
 
@@ -59,4 +68,5 @@ describe Oystercard do
       expect(subject).not_to be_in_transit
     end
   end
+
 end

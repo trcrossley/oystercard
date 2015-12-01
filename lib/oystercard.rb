@@ -4,7 +4,7 @@ class Oystercard
   MIN_LIMIT = 1
   MIN_FARE = 1
 
-  attr_reader :balance, :in_use
+  attr_reader :balance, :in_use, :entry_station
 
   def initialize
     @balance = 0
@@ -18,20 +18,23 @@ class Oystercard
 
 
 
-  def tap_in
+  def tap_in(station)
     fail "insufficient funds" if min_limit
     @in_use = true
+    @entry_station = station
 
   end
 
   def tap_out
     @in_use = false
     deduct(MIN_FARE)
+    @entry_station = nil
   end
 
   def in_transit?
-    @in_use
+    !!entry_station
   end
+
 
 private
 
