@@ -46,12 +46,11 @@ describe Oystercard do
       expect(subject).to_not be_in_transit
     end
 
-    # it 'deducts fare from the card' do
-    #   subject.top_up(20)
-    #   subject.tap_in
-    #   subject.tap_out
-    #   expect{ subject.deduct(1)}.to change{subject.balance}.by -1
-    # end
+    it 'deducts fare from the card' do
+      subject.top_up(20)
+      subject.tap_in
+      expect{ subject.tap_out}.to change{subject.balance}.by(-Oystercard::MIN_FARE)
+    end
 
   end
 
