@@ -68,23 +68,5 @@ let(:journey){ {entry_station: entry_station, exit_station: exit_station} }
         expect(subject.journeys[1]).to eq [entry_station, exit_station]
       end
     end
-
   end
-
-  # describe '#journey' do
-  #   before do
-  #
-  #   end
-  # end
-  #
-  # describe '#in_transit?' do
-  #   it 'is not in transit' do
-  #     expect(subject).not_to be_in_transit
-  #   end
-  #
-  #   it 'holds a journey log' do
-  #     expect(subject.journeys).to be_empty
-  #   end
-  # end
-
 end
