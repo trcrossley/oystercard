@@ -1,72 +1,63 @@
 require 'oystercard'
+require 'journey'
 
 describe Oystercard do
 
-let(:station){double :station}
-let(:entry_station){double :station}
-let(:exit_station){double :station}
-let(:journey){ {entry_station: entry_station, exit_station: exit_station} }
+  subject(:oystercard) {described_class.new}
+  let(:rand_num) {rand(1..40)}
+  let(:entry_station) {double :station}
+  let(:exit_station) {double :station}
+  let(:entry_station2) {double :station}
+  let(:exit_station2) {double :station}
 
-  it 'has a balance of zero' do
-    expect(subject.balance).to eq(0)
+
+  describe '#initialize' do
+    it 'has balance = 0' do
+      expect(oystercard.balance).to eq 0
+    end
   end
+
 
   describe '#top_up' do
 
-    it 'can be topped up' do
-      expect { subject.top_up 1 }.to change{ subject.balance }.by 1
+    it 'allows user to top up' do
+      expect{ oystercard.top_up(rand_num)}.to change { oystercard.balance }.by rand_num
     end
 
-    it 'prevents exceeding card limit' do
-      limit = Oystercard::CARD_LIMIT
-      subject.top_up(90)
-      expect { subject.top_up(1) }.to raise_error "card limit exceeded #{limit}"
+    it 'raises an error when balance exceeds £90' do
+      oystercard.top_up(Oystercard::DEFAULT_LIMIT)
+      expect{ oystercard.top_up(rand_num) }.to raise_error Oystercard::MAX_BALANCE_ERROR
+    end
+
+  end
+
+  describe '#touch_in' do
+
+    it'raises an error if balance is 0' do
+      expect {oystercard.touch_in(entry_station)}.to raise_error Oystercard::MIN_BALANCE_ERROR
+    end
+
+  end
+
+  describe '#touch_out' do
+
+    it 'deducts fare from card' do
+      oystercard.top_up(rand_num)
+      oystercard.touch_in(entry_station)
+      expect {oystercard.touch_out(exit_station)}.to change{oystercard.balance}.by (-Oystercard::FARE)
     end
   end
 
-  describe '#tap_in' do
-    it 'begins a trip' do
-      subject.top_up(20)
-      subject.tap_in(station)
-      expect(subject).to be_in_transit
+  describe '#in_journey' do
+
+    it 'returns status for touch in' do
+      # let(:touch_in) {double :start}
+      oystercard.top_up(rand_num)
+      oystercard.touch_in(entry_station)
+      expect(oystercard.in_journey?).to eq entry_station
     end
 
-    it 'prevents tapping in' do
-      expect{subject.tap_in(double :station)}.to raise_error "insufficient funds"
-    end
   end
 
-  describe '#tap_out' do
-    it 'ends a trip' do
-      subject.top_up(20)
-      subject.tap_out(station)
-      expect(subject).to_not be_in_transit
-    end
 
-    it 'deducts fare from the card' do
-      subject.top_up(20)
-      subject.tap_in(station)
-      expect{ subject.tap_out(station)}.to change{subject.balance}.by(-Oystercard::MIN_FARE)
-    end
-
-    describe '#journey_log' do
-      it 'holds a jouney log' do
-        expect(subject.journeys).to be_empty
-      end
-
-      it 'stores the entry station' do
-        subject.top_up(20)
-        subject.tap_in(entry_station)
-        subject.tap_out(exit_station)
-        expect(subject.journeys[1]).to eq [entry_station, exit_station]
-      end
-
-      it 'stores the exit station' do
-        subject.top_up(20)
-        subject.tap_in(entry_station)
-        subject.tap_out(exit_station)
-        expect(subject.journeys[1]).to eq [entry_station, exit_station]
-      end
-    end
-  end
 end
